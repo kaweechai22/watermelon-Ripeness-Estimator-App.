@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>วัดความสุกของแตงโม (ตามช่วงความถี่)</title>
+  <title>วัดระดับความสุกของแตงโม </title>
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#4CAF50" />
   <style>
@@ -24,7 +24,7 @@
       background-color: #4caf50;
       color: white;
       cursor: pointer;
-      margin-top: 1rem;
+      margin: 0.5rem;
     }
     .result {
       margin-top: 2rem;
@@ -38,6 +38,7 @@
 <body>
   <h1>แตะปุ่มแล้วเคาะแตงโม 🎤🍉</h1>
   <button onclick="startDetecting()">เริ่มฟังเสียง</button>
+  <button onclick="reset()">รีเซ็ต</button>
   <p id="status">สถานะ: รอฟังเสียงเคาะ...</p>
   <div id="result" class="result"></div>
 
@@ -51,7 +52,8 @@
       const source = audioContext.createMediaStreamSource(stream);
       analyser = audioContext.createAnalyser();
       analyser.fftSize = 2048;
-      dataArray = new Float32Array(analyser.fftSize);
+      const bufferLength = analyser.frequencyBinCount;
+      dataArray = new Uint8Array(bufferLength);
       source.connect(analyser);
       isListening = true;
       listen();
@@ -59,39 +61,28 @@
 
     function listen() {
       if (!isListening) return;
-      analyser.getFloatTimeDomainData(dataArray);
-      const freq = autoCorrelate(dataArray, audioContext.sampleRate);
-      if (freq > 50 && freq < 1500) {
+      analyser.getByteFrequencyData(dataArray);
+      const sampleRate = audioContext.sampleRate;
+      const binSize = sampleRate / analyser.fftSize;
+      let maxAmp = 0;
+      let peakFreq = 0;
+
+      for (let i = 0; i < dataArray.length; i++) {
+        const freq = i * binSize;
+        const amp = dataArray[i];
+        if (freq >= 100 && freq <= 900 && amp > maxAmp) {
+          maxAmp = amp;
+          peakFreq = freq;
+        }
+      }
+
+      if (peakFreq) {
         isListening = false;
-        document.getElementById("status").innerText = `ตรวจพบความถี่: ${freq.toFixed(2)} Hz`;
-        showResult(freq);
+        document.getElementById("status").innerText = `ตรวจพบความถี่: ${peakFreq.toFixed(2)} Hz`;
+        showResult(peakFreq);
       } else {
         requestAnimationFrame(listen);
       }
-    }
-
-    function autoCorrelate(buffer, sampleRate) {
-      let SIZE = buffer.length;
-      let bestOffset = -1, bestCorrelation = 0, rms = 0;
-
-      for (let i = 0; i < SIZE; i++) rms += buffer[i] * buffer[i];
-      rms = Math.sqrt(rms / SIZE);
-      if (rms < 0.01) return -1;
-
-      let lastCorrelation = 1;
-      for (let offset = 1; offset < SIZE / 2; offset++) {
-        let correlation = 0;
-        for (let i = 0; i < SIZE / 2; i++)
-          correlation += Math.abs(buffer[i] - buffer[i + offset]);
-        correlation = 1 - (correlation / (SIZE / 2));
-        if (correlation > 0.9 && correlation > lastCorrelation) {
-          bestCorrelation = correlation;
-          bestOffset = offset;
-        }
-        lastCorrelation = correlation;
-      }
-
-      return bestCorrelation > 0.9 ? sampleRate / bestOffset : -1;
     }
 
     function showResult(freq) {
@@ -108,6 +99,12 @@
       const result = document.getElementById("result");
       result.style.backgroundColor = color;
       result.innerHTML = `ความถี่: ${freq.toFixed(2)} Hz<br>ระดับ: ${level}`;
+    }
+
+    function reset() {
+      isListening = false;
+      document.getElementById("status").innerText = "สถานะ: รอฟังเสียงเคาะ...";
+      document.getElementById("result").innerHTML = "";
     }
 
     if ('serviceWorker' in navigator) {
