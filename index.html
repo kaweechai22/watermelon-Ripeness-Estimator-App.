@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>วัดความสุกของแตงโม (เคาะแล้วรู้ผลทันที)</title>
+  <title>วัดความสุกของแตงโม (ตามช่วงความถี่)</title>
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#4CAF50" />
   <style>
@@ -95,22 +95,19 @@
     }
 
     function showResult(freq) {
-      const brix = -0.000055 * freq * freq + 0.0532 * freq - 3.97;
       let level = "", color = "";
-      if (brix < 4.5) {
-        level = "อาจเริ่มเน่า"; color = "#9e9e9e";
-      } else if (brix < 5) {
+      if (freq > 500) {
         level = "ดิบ"; color = "#4caf50";
-      } else if (brix < 7) {
+      } else if (freq > 450) {
         level = "ใกล้สุก"; color = "#ffeb3b";
-      } else if (brix < 9) {
+      } else if (freq >= 350) {
         level = "สุกพอดี"; color = "#ff9800";
       } else {
-        level = "หวานมาก"; color = "#f44336";
+        level = "อาจเน่า"; color = "#9e9e9e";
       }
       const result = document.getElementById("result");
       result.style.backgroundColor = color;
-      result.innerHTML = `ความถี่: ${freq.toFixed(2)} Hz<br>ความหวาน: ${brix.toFixed(2)}% Brix<br>ระดับ: ${level}`;
+      result.innerHTML = `ความถี่: ${freq.toFixed(2)} Hz<br>ระดับ: ${level}`;
     }
 
     if ('serviceWorker' in navigator) {
