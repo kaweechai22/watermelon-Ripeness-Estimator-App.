@@ -1,89 +1,91 @@
-<!DOCTYPE html>
-<html lang="th">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>วัดความสุกของแตงโม</title>
-  <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#4CAF50" />
-  <style>
-    body {
-      font-family: sans-serif;
-      text-align: center;
-      padding: 2rem;
-      background: #f0f8ff;
-    }
-    h1 {
-      color: #2e7d32;
-    }
-    input {
-      font-size: 1.2rem;
-      padding: 0.5rem;
-      width: 200px;
-      margin: 1rem 0;
-    }
-    button {
-      font-size: 1rem;
-      padding: 0.5rem 1rem;
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    .result {
-      margin-top: 2rem;
-      font-size: 1.5rem;
-      font-weight: bold;
-      padding: 1rem;
-      border-radius: 10px;
-    }
-  </style>
-</head>
-<body>
-  <h1>แอปวัดความสุกของแตงโม</h1>
-  <p>ใส่ค่าความถี่ (Hz):</p>
-  <input type="number" id="freqInput" placeholder="เช่น 421.3" />
-  <br />
-  <button onclick="checkSweetness()">คำนวณความหวาน</button>
-  <div id="result" class="result"></div>
+<button onclick="startListening()">🎙️ ฟังเสียงเคาะแตงโม</button>
+<p id="micStatus">สถานะไมค์: ยังไม่เริ่ม</p>
 
-  <script>
-    function checkSweetness() {
-      const f = parseFloat(document.getElementById("freqInput").value);
-      if (isNaN(f)) {
-        alert("กรุณาระบุความถี่");
-        return;
-      }
+<script>
+let audioContext;
+let micStream;
+let analyser;
+let dataArray;
+let isListening = false;
 
-      const brix = -0.000055 * f * f + 0.0532 * f - 3.97;
-      const result = document.getElementById("result");
-      let level = "", color = "";
+function autoCorrelate(buffer, sampleRate) {
+  let SIZE = buffer.length;
+  let MAX_SAMPLES = Math.floor(SIZE / 2);
+  let bestOffset = -1;
+  let bestCorrelation = 0;
+  let rms = 0;
 
-      if (brix < 4.5) {
-        level = "อาจเริ่มเน่า";
-        color = "#9e9e9e";
-      } else if (brix < 5) {
-        level = "ดิบ";
-        color = "#4caf50";
-      } else if (brix < 7) {
-        level = "ใกล้สุก";
-        color = "#ffeb3b";
-      } else if (brix < 9) {
-        level = "สุกพอดี";
-        color = "#ff9800";
-      } else {
-        level = "หวานมาก";
-        color = "#f44336";
-      }
+  for (let i = 0; i < SIZE; i++) {
+    let val = buffer[i];
+    rms += val * val;
+  }
+  rms = Math.sqrt(rms / SIZE);
+  if (rms < 0.01) return -1;
 
-      result.style.backgroundColor = color;
-      result.innerHTML = `ความหวานประมาณ ${brix.toFixed(2)}%Brix<br />ระดับ: ${level}`;
+  let lastCorrelation = 1;
+  for (let offset = 1; offset < MAX_SAMPLES; offset++) {
+    let correlation = 0;
+    for (let i = 0; i < MAX_SAMPLES; i++) {
+      correlation += Math.abs(buffer[i] - buffer[i + offset]);
     }
-
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js');
+    correlation = 1 - (correlation / MAX_SAMPLES);
+    if (correlation > 0.9 && correlation > lastCorrelation) {
+      bestCorrelation = correlation;
+      bestOffset = offset;
     }
-  </script>
-</body>
-</html>
+    lastCorrelation = correlation;
+  }
+
+  if (bestCorrelation > 0.9) {
+    return sampleRate / bestOffset;
+  } else {
+    return -1;
+  }
+}
+
+async function startListening() {
+  if (isListening) return;
+
+  isListening = true;
+  document.getElementById("micStatus").innerText = "สถานะไมค์: กำลังฟัง...";
+
+  audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  micStream = audioContext.createMediaStreamSource(stream);
+  analyser = audioContext.createAnalyser();
+  analyser.fftSize = 2048;
+
+  micStream.connect(analyser);
+  dataArray = new Float32Array(analyser.fftSize);
+
+  listenFrequency();
+}
+
+function listenFrequency() {
+  analyser.getFloatTimeDomainData(dataArray);
+  let freq = autoCorrelate(dataArray, audioContext.sampleRate);
+  if (freq > 50 && freq < 2000) {
+    document.getElementById("micStatus").innerText = `ความถี่ที่ตรวจจับได้: ${freq.toFixed(2)} Hz`;
+    document.getElementById(`freq${inputCount}`)?.remove?.();
+    if (inputCount < maxInputs) {
+      const input = document.createElement("input");
+      input.type = "number";
+      input.value = freq.toFixed(2);
+      input.id = `freq${inputCount}`;
+      input.style.display = \"none\"; // ซ่อนไว้
+      document.getElementById(\"freqInputs\").appendChild(input);
+      inputCount++;
+    }
+  } else {
+    document.getElementById(\"micStatus\").innerText = \"กำลังฟัง... (ไม่มีความถี่ชัดเจน)\";
+  }
+
+  if (inputCount < maxInputs) {
+    requestAnimationFrame(listenFrequency);
+  } else {
+    document.getElementById(\"micStatus\").innerText = \"ได้ครบ 5 ค่าแล้ว พร้อมคำนวณ\"; 
+    isListening = false;
+  }
+}
+</script>
+edit1
