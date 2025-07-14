@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>วัดระดับความสุกของแตงโม </title>
+  <title>วัดระดับการสุกของแตงโม</title>
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#4CAF50" />
   <style>
@@ -33,10 +33,19 @@
       font-size: 1.5rem;
       font-weight: bold;
     }
+    .watermelon {
+      margin: 2rem auto;
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: radial-gradient(circle at center, #ff0000 50%, #2e7d32 51%);
+      border: 5px solid #2e7d32;
+    }
   </style>
 </head>
 <body>
   <h1>แตะปุ่มแล้วเคาะแตงโม 🎤🍉</h1>
+  <div id="watermelon" class="watermelon"></div>
   <button onclick="startDetecting()">เริ่มฟังเสียง</button>
   <button onclick="reset()">รีเซ็ต</button>
   <p id="status">สถานะ: รอฟังเสียงเคาะ...</p>
@@ -70,7 +79,7 @@
       for (let i = 0; i < dataArray.length; i++) {
         const freq = i * binSize;
         const amp = dataArray[i];
-        if (freq >= 100 && freq <= 900 && amp > maxAmp) {
+        if (freq >= 150 && freq <= 900 && amp > maxAmp) {
           maxAmp = amp;
           peakFreq = freq;
         }
@@ -86,25 +95,29 @@
     }
 
     function showResult(freq) {
-      let level = "", color = "";
+      let level = "", color = "", sweetness = "", fleshColor = "";
       if (freq > 500) {
-        level = "ดิบ"; color = "#4caf50";
+        level = "ดิบ"; color = "#4caf50"; sweetness = "น้อยมาก"; fleshColor = "#c8f6c4";
       } else if (freq > 450) {
-        level = "ใกล้สุก"; color = "#ffeb3b";
+        level = "ใกล้สุก"; color = "#ffeb3b"; sweetness = "น้อย"; fleshColor = "#ffe082";
       } else if (freq >= 350) {
-        level = "สุกพอดี"; color = "#ff0000";
+        level = "สุกพอดี"; color = "#f44336"; sweetness = "หวาน"; fleshColor = "#ff5252";
       } else {
-        level = "อาจเน่า"; color = "#9e9e9e";
+        level = "อาจเน่า"; color = "#9e9e9e"; sweetness = "เปรี้ยว / เสีย"; fleshColor = "#bdbdbd";
       }
+
       const result = document.getElementById("result");
+      const melon = document.getElementById("watermelon");
+      melon.style.background = `radial-gradient(circle at center, ${fleshColor} 50%, #2e7d32 51%)`;
       result.style.backgroundColor = color;
-      result.innerHTML = `ความถี่: ${freq.toFixed(2)} Hz<br>ระดับ: ${level}`;
+      result.innerHTML = `ความถี่: ${freq.toFixed(2)} Hz<br>ระดับ: ${level}<br>ความหวาน: ${sweetness}`;
     }
 
     function reset() {
       isListening = false;
       document.getElementById("status").innerText = "สถานะ: รอฟังเสียงเคาะ...";
       document.getElementById("result").innerHTML = "";
+      document.getElementById("watermelon").style.background = "radial-gradient(circle at center, #ff0000 50%, #2e7d32 51%)";
     }
 
     if ('serviceWorker' in navigator) {
@@ -113,3 +126,4 @@
   </script>
 </body>
 </html>
+
