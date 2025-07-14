@@ -96,6 +96,9 @@
 
     function showResult(freq) {
       let level = "", color = "", sweetness = "", fleshColor = "";
+      let brix = (-0.0273 * freq) + 24.5;
+      brix = Math.max(0, Math.min(brix, 20)); // จำกัดค่า Brix ให้อยู่ในช่วง 0–20
+
       if (freq > 500) {
         level = "ดิบ"; color = "#4caf50"; sweetness = "น้อยมาก"; fleshColor = "#c8f6c4";
       } else if (freq > 450) {
@@ -110,7 +113,7 @@
       const melon = document.getElementById("watermelon");
       melon.style.background = `radial-gradient(circle at center, ${fleshColor} 50%, #2e7d32 51%)`;
       result.style.backgroundColor = color;
-      result.innerHTML = `ความถี่: ${freq.toFixed(2)} Hz<br>ระดับ: ${level}<br>ความหวาน: ${sweetness}`;
+      result.innerHTML = `ความถี่: ${freq.toFixed(2)} Hz<br>ระดับ: ${level}<br>ความหวาน: ${sweetness}<br>%Brix (โดยประมาณ): ${brix.toFixed(1)} °Bx`;
     }
 
     function reset() {
@@ -126,4 +129,5 @@
   </script>
 </body>
 </html>
+
 
