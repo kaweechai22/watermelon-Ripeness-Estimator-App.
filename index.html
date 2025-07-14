@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>วัดระดับการสุกของแตงโม</title>
+  <title>วัดความสุกของแตงโม</title>
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#4CAF50" />
   <style>
@@ -96,7 +96,7 @@
 
     function showResult(freq) {
       let level = "", color = "", sweetness = "", fleshColor = "";
-      let brix = (-0.0273 * freq) + 24.5;
+      let brix = (-0.000055 * freq * freq) + (0.0532 * freq) - 3.97;
       brix = Math.max(0, Math.min(brix, 20)); // limit Brix between 0-20
 
       if (freq > 500) {
