@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>วัดความสุกของแตงโม</title>
+  <title>วัดระดับการสุกของแตงโม</title>
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#4CAF50" />
   <style>
@@ -97,7 +97,7 @@
     function showResult(freq) {
       let level = "", color = "", sweetness = "", fleshColor = "";
       let brix = (-0.000055 * freq * freq) + (0.0532 * freq) - 3.97;
-      brix = Math.max(0, Math.min(brix, 20)); // limit Brix between 0-20
+      brix = Math.max(0, Math.min(brix, 20)); // limit between 0–20 °Bx
 
       if (freq > 500) {
         level = "ดิบ"; color = "#4caf50"; sweetness = "น้อยมาก"; fleshColor = "#c8f6c4";
@@ -113,7 +113,12 @@
       const melon = document.getElementById("watermelon");
       melon.style.background = `radial-gradient(circle at center, ${fleshColor} 50%, #2e7d32 51%)`;
       result.style.backgroundColor = color;
-      result.innerHTML = `ความถี่: ${freq.toFixed(2)} Hz<br>ระดับ: ${level}<br>ความหวาน: ${sweetness}<br>%Brix (โดยประมาณ): ${brix.toFixed(2)} °Bx`;
+      result.innerHTML = `
+        ความถี่: ${freq.toFixed(2)} Hz<br>
+        ระดับ: ${level}<br>
+        ความหวาน: ${sweetness}<br>
+        %Brix (โดยประมาณ): ${brix.toFixed(2)} °Bx
+      `;
     }
 
     function reset() {
@@ -129,6 +134,7 @@
   </script>
 </body>
 </html>
+
 
 
 
