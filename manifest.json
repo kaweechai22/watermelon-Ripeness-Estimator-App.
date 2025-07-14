@@ -1,16 +1,10 @@
 {
-  "name": "แอปวัดระดับการสุกแตงโม",
-  "short_name": "แตงโม",
-  "start_url": ".",
+  "name": "วัดความสุกของแตงโม",
+  "short_name": "Watermelon",
+  "start_url": "index.html",
   "display": "standalone",
   "background_color": "#f0f8ff",
   "theme_color": "#4CAF50",
-  "icons": [
-    {
-      "src": "https://cdn-icons-png.flaticon.com/512/415/415733.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
-  ]
+  "icons": []
 }
 
