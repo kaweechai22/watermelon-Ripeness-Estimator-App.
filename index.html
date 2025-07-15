@@ -39,7 +39,7 @@
       width: 160px;
       height: 160px;
       border-radius: 50%;
-      background: radial-gradient(circle at center, #ff0000 60%, #2e7d32 40%);
+      background: radial-gradient(circle at center, #ff0000 70%, #2e7d32 30%);
       border: 5px solid #2e7d32;
     }
   </style>
@@ -118,7 +118,7 @@
 
       const result = document.getElementById("result");
       const melon = document.getElementById("watermelon");
-      melon.style.background = `radial-gradient(circle at center, ${fleshColor} 50%, #2e7d32 51%)`;
+      melon.style.background = `radial-gradient(circle at center, ${fleshColor} 70%, #2e7d32 30%)`;
       result.style.backgroundColor = color;
       result.innerHTML = `
         ความถี่: ${freq.toFixed(2)} Hz<br>
@@ -132,7 +132,7 @@
       isListening = false;
       document.getElementById("status").innerText = "สถานะ: รอฟังเสียงเคาะ...";
       document.getElementById("result").innerHTML = "";
-      document.getElementById("watermelon").style.background = "radial-gradient(circle at center, #ff0000 50%, #2e7d32 51%)";
+      document.getElementById("watermelon").style.background = "radial-gradient(circle at center, #ff0000 70%, #2e7d32 30%)";
     }
 
     if ('serviceWorker' in navigator) {
