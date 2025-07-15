@@ -1,9 +1,20 @@
 {
-  "name": "วัดระดับการสุกของแตงโม",
+  "name": "วัดความสุกของแตงโม",
   "short_name": "Watermelon",
   "start_url": "index.html",
   "display": "standalone",
   "background_color": "#f0f8ff",
   "theme_color": "#4CAF50",
-  "icons": []
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
 }
