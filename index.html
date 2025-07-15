@@ -106,9 +106,9 @@
       console.log('Calculated Brix before clamp:', brix);
       brix = Math.max(3, Math.min(brix, 20)); // limit between 3–20 °Bx // limit between 3–20 °Bx
 
-      if (freq > 500) {
+      if (freq > 700) {
         level = "ดิบ"; color = "#4caf50"; sweetness = "น้อยมาก"; fleshColor = "#c8f6c4";
-      } else if (freq > 450) {
+      } else if (freq > 600) {
         level = "ใกล้สุก"; color = "#ffeb3b"; sweetness = "น้อย"; fleshColor = "#ffe082";
       } else if (freq >= 350) {
         level = "สุกพอดี"; color = "#f44336"; sweetness = "หวาน"; fleshColor = "#ff5252";
