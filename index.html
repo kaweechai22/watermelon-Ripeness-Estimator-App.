@@ -97,8 +97,14 @@
 
     function showResult(freq) {
       let level = "", color = "", sweetness = "", fleshColor = "";
-      let brix = 0.0000000000003 * Math.pow(freq, 6) - 0.0000000008 * Math.pow(freq, 5) + 0.000001  * Math.pow(freq, 4) - 0.0008 * Math.pow(freq, 3) + 0.3293 * Math.pow(freq, 2) -
-  67.431 * freq + 5601.3;
+      let brix = 
+        3e-13 * Math.pow(freq, 6) -
+        8e-10 * Math.pow(freq, 5) +
+        1e-6  * Math.pow(freq, 4) -
+        0.0008 * Math.pow(freq, 3) +
+        0.3293 * Math.pow(freq, 2) -
+        67.431 * freq +
+        5601.3;
 
       brix = Math.max(0, Math.min(brix, 20)); // limit between 4–20 °Bx
 
