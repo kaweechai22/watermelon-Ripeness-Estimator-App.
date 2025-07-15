@@ -100,7 +100,7 @@
       let brix = 0.0000000000003 * Math.pow(freq, 6) - 0.0000000008 * Math.pow(freq, 5) + 0.000001  * Math.pow(freq, 4) - 0.0008 * Math.pow(freq, 3) + 0.3293 * Math.pow(freq, 2) -
   67.431 * freq + 5601.3;
 
-      brix = Math.max(0, Math.min(brix, 20)); // limit between 0–20 °Bx
+      brix = Math.max(0, Math.min(brix, 20)); // limit between 4–20 °Bx
 
       if (freq > 500) {
         level = "ดิบ"; color = "#4caf50"; sweetness = "น้อยมาก"; fleshColor = "#c8f6c4";
