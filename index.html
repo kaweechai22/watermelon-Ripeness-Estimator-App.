@@ -80,7 +80,7 @@
       for (let i = 0; i < dataArray.length; i++) {
         const freq = i * binSize;
         const amp = dataArray[i];
-        if (freq >= 150 && freq <= 900 && amp > maxAmp) {
+        if (freq >= 100 && freq <= 1200 && amp > maxAmp) {
           maxAmp = amp;
           peakFreq = freq;
         }
